@@ -1,5 +1,5 @@
 # blog_DJANGO
-## Bulding Blog Aplication by using Python 3.12.2 and Django 5.0.2
+## Building Blog Application by using Python 3.12.2 and Django 5.0.2
 - Build data models, views, and URLs
 - Implement an administration site for your blog
 - Use canonical URLs for modles and implement SEO-friendly URLs for posts
