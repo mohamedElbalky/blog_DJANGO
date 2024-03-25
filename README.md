@@ -10,3 +10,4 @@
 - Implement custom template tags to display latest posts and most commented posts
 - Create a sitemap
 - Implement a full-text search engine using PostgreSQL
+- setup dotenv configuration
