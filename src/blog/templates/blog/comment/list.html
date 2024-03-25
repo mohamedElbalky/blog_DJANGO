@@ -10,7 +10,7 @@
         Comment {{ forloop.counter }} by {{ comment.name }}
         {{ comment.created }}
     </p>
-    {{ comment.body|linebreaks }}
+    {{ comment.body|linebreaks|truncatewords:20}}
 </div>
 {% empty %}
 <p>There are no comments yet.</p>

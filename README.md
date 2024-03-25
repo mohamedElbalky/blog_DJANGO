@@ -8,5 +8,5 @@
 - using prefetch_related to get post with its comments from database in one query
 - Add tags to posts using django-taggit and recommend similar posts based on shared tags
 - Implement custom template tags to display latest posts and most commented posts
-- Create a sitemap and a RSS feed for your blog
+- Create a sitemap
 - Implement a full-text search engine using PostgreSQL
