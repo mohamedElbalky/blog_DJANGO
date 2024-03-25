@@ -23,4 +23,5 @@ urlpatterns = [
         views.add_post_comment_view,
         name="add_post_comment",
     ),
+    path("posts/search/", views.post_search_view, name="post_search"),
 ]

@@ -8,9 +8,10 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
 from django.db.models import Count
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 from .models import Comment, Post
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 
 
 def post_list_view(request, tag_slug=None):
@@ -57,14 +58,17 @@ def post_detail_view(request, year, month, day, hour, second, minute, slug):
         tags__in=post_tags_ids, status=Post.Status.PUBLISHED
     ).exclude(id=post.id)
     similar_posts = similar_posts.annotate(same_tags=Count("tags")).order_by(
-        "-same_tags",
-        "-publish_at"
+        "-same_tags", "-publish_at"
     )  # sort similar posts by the number of tags
 
     # display add comment form
     comment_form = CommentForm()
-    
-    context = {"post": post, "comment_form": comment_form, "similar_posts": similar_posts}
+
+    context = {
+        "post": post,
+        "comment_form": comment_form,
+        "similar_posts": similar_posts,
+    }
 
     return render(request, "blog/post/detail.html", context)
 
@@ -119,3 +123,28 @@ def add_post_comment_view(request, post_id):
             comment.post = post
             comment.save()
             return redirect(post.get_absolute_url())
+
+
+def post_search_view(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if "query" in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data["query"]
+            
+            search_vector = SearchVector("title", "body")
+            search_query = SearchQuery(query, config="english")
+            
+            results = (
+                Post.objects.annotate(
+                    search=search_vector,
+                    rank=SearchRank(search_vector, search_query),
+                )
+                .filter(search=search_query, status=Post.Status.PUBLISHED)
+                .order_by("-rank")
+            )
+
+    context = {"form": form, "query": query, "results": results}
+    return render(request, "blog/post/search.html", context)
