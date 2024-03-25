@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.db.models import Prefetch
+from django.db.models import Count
 
 from .models import Comment, Post
 from .forms import EmailPostForm, CommentForm
@@ -50,8 +51,20 @@ def post_detail_view(request, year, month, day, hour, second, minute, slug):
         publish_at__second=second,
     )
 
+    # list similar posts
+    post_tags_ids = post.tags.values_list("id", flat=True)  # get tags IDs for each post
+    similar_posts = Post.objects.filter(
+        tags__in=post_tags_ids, status=Post.Status.PUBLISHED
+    ).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count("tags")).order_by(
+        "-same_tags",
+        "-publish_at"
+    )  # sort similar posts by the number of tags
+
+    # display add comment form
     comment_form = CommentForm()
-    context = {"post": post, "comment_form": comment_form}
+    
+    context = {"post": post, "comment_form": comment_form, "similar_posts": similar_posts}
 
     return render(request, "blog/post/detail.html", context)
 
