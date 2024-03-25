@@ -8,4 +8,14 @@
     Published at {{ post.publish_at }} by {{ post.author }}
     </p>
     {{ post.body|linebreaks }}
+    <p>
+        <a href="{% url 'blog:post_share' post.id %}">
+            Share this post
+        </a>
+    </p>
+
+    
+    {% include "blog/comment/list.html" with post=post %}
+    {% include "blog/comment/form.html" with form=comment_form %}
+
 {% endblock %}
