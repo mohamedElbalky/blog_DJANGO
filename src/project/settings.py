@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
+    # external pkg
+    'taggit',
+    'django_extensions',
     
     # inernal apps
     "blog.apps.BlogConfig",

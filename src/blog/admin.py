@@ -3,9 +3,12 @@ from django.contrib import admin
 from .models import Post, Comment
 
 
+
 class PostComment(admin.StackedInline):
     model = Comment
     extra = 1
+
+
     
 
 @admin.register(Post)

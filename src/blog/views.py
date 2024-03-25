@@ -1,3 +1,5 @@
+from taggit.models import Tag
+
 from django.shortcuts import get_object_or_404, redirect, render
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -10,8 +12,13 @@ from .models import Comment, Post
 from .forms import EmailPostForm, CommentForm
 
 
-def post_list_view(request):
+def post_list_view(request, tag_slug=None):
     post_qs = Post.objects.filter(status=Post.Status.PUBLISHED)
+
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        post_qs = post_qs.filter(tags__in=[tag])
 
     posts_per_page = 3
     paginator = Paginator(post_qs, posts_per_page)
@@ -24,7 +31,7 @@ def post_list_view(request):
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
 
-    context = {"posts": posts}
+    context = {"posts": posts, "tag": tag}
     return render(request, "blog/post/list.html", context)
 
 
@@ -42,9 +49,9 @@ def post_detail_view(request, year, month, day, hour, second, minute, slug):
         publish_at__minute=minute,
         publish_at__second=second,
     )
-    
+
     comment_form = CommentForm()
-    context = {"post": post, 'comment_form':comment_form}
+    context = {"post": post, "comment_form": comment_form}
 
     return render(request, "blog/post/detail.html", context)
 
@@ -91,8 +98,6 @@ def add_post_comment_view(request, post_id):
         status=Post.Status.PUBLISHED,
         id=post_id,
     )
-
-    form = CommentForm()
 
     if request.method == "POST":
         form = CommentForm(request.POST)

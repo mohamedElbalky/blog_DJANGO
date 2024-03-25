@@ -49,28 +49,63 @@ p.date {
 
 /* forms */
 label { 
-  float:left;
-  clear:both;
+  display: block;
   color:#333;
   margin-bottom:4px; 
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+  /* gap: 5px; */
+  margin-top: 10px;
+}
+
+form p {
+  margin: 0;
+}
+
 input, textarea { 
-  clear:both;
-  float:left;
+  /* display: block; */
+  width: 70%;
   margin:0 0 10px;
   background:#ededed;
   border:0;
   padding:6px 10px;
   font-size:12px;
+  caret-color: #0d72a4;
 }
+
+input {
+  height: 25px;
+  font-size: 15px;
+  caret-color: #0d72a4;
+}
+
+textarea { 
+  height:100px;
+}
+
 input[type=submit] {
-  font-weight:bold;
+  width: fit-content;
+  height: auto;
   background:#00abff;
   color:#fff;
-  padding:10px 20px;
   font-size:14px;
   text-transform:uppercase; 
+  font-weight:bold;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.5s;
 }
+
+input[type=submit]:hover {
+  background-color: #00aaffd4;
+  letter-spacing: 0.5px;
+}
+
+
 .errorlist { 
   color:#cc0033;
   float:left;
